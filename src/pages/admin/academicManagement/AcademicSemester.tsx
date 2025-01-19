@@ -13,14 +13,14 @@ type DataType = Readonly<{
 
 const AcademicSemester = () => {
   const [params, setParams] = useState<TQueryParam[] | undefined>(undefined);
-  const { data: semeatarData, isFetching } = useAcademciSemesterQuery([params]);
+  const { data: semeatarData, isFetching } = useAcademciSemesterQuery(params);
   const columns: TableColumnsType<DataType> = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
       filters: [
-        { text: "Autmn", value: "Autmn" },
+        { text: "Autumn", value: "Autumn" },
         { text: "Summer", value: "Summer" },
         { text: "Fall", value: "Fall" },
       ],
@@ -63,12 +63,12 @@ const AcademicSemester = () => {
   ) => {
     if (extra.action === "filter") {
       const queryParams: TQueryParam[] = [];
-      filters.name?.forEach((item) =>
-        queryParams.push({ name: "name", value: item })
-      );
-      filters.year?.forEach((item) =>
-        queryParams.push({ name: "year", value: item })
-      );
+      filters.name?.forEach((item) => {
+        if (item) queryParams.push({ name: "name", value: item });
+      });
+      filters.year?.forEach((item) => {
+        if (item) queryParams.push({ name: "year", value: item });
+      });
       setParams(queryParams);
     }
   };

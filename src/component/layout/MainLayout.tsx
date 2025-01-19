@@ -13,7 +13,21 @@ const MainLayout = () => {
         <Sidebar />
         <Layout>
           <Header style={{ padding: 0 }}>
-            <Button onClick={() => dispatch(logout())}>Logout</Button>
+            <Button
+              type="primary"
+              shape="round"
+              size="large"
+              style={{
+                backgroundColor: "#ff4d4f",
+                borderColor: "#ff4d4f",
+                color: "#fff",
+                fontWeight: "bold",
+                padding: "0 24px",
+              }}
+              onClick={() => dispatch(logout())}
+            >
+              Logout
+            </Button>
           </Header>
           <Content style={{ margin: "24px 16px 0" }}>
             <div
