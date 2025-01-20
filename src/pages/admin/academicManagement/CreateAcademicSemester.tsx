@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Col, Flex } from "antd";
+import { Button, Col, Row } from "antd";
 import PHSelect from "../../../component/form/PHSelect";
 import { semesterOptions } from "../../../constants/semester";
 import { FieldValues, SubmitHandler } from "react-hook-form";
@@ -23,7 +23,7 @@ const CreateAcademicSemester = () => {
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const toastId = toast.loading("....Creating");
     const name = semesterOptions[Number(data?.name) - 1]?.label;
-
+    console.log(data);
     const semesterData = {
       name,
       code: data.name,
@@ -48,8 +48,8 @@ const CreateAcademicSemester = () => {
 
   return (
     <>
-      <Flex justify="center" align="center">
-        <Col span={6}>
+      <Row>
+        <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
           <PHForm
             onSubmit={onSubmit}
             resolver={zodResolver(academiCemesterSchema)}
@@ -66,11 +66,24 @@ const CreateAcademicSemester = () => {
               name="endMonth"
               options={monthOptions}
             />
-
-            <Button htmlType="submit">Submit</Button>
+            <Button
+              type="primary"
+              shape="round"
+              size="large"
+              style={{
+                backgroundColor: "#1890ff",
+                borderColor: "#1890ff",
+                fontWeight: "bold",
+                padding: "0 24px",
+                color: "#fff",
+              }}
+              htmlType="submit"
+            >
+              Submit
+            </Button>
           </PHForm>
         </Col>
-      </Flex>
+      </Row>
     </>
   );
 };

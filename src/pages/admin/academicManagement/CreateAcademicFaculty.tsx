@@ -2,10 +2,28 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import PHForm from "../../../component/form/PHForm";
 import PHInput from "../../../component/form/PHInput";
 import { Button, Col, Row } from "antd";
+import { useAddAcademciFacultyMutation } from "../../../redux/features/admin/academicManagement.api";
+import { toast } from "sonner";
+import { TResponse } from "../../../types/global";
+import { TAcademicFaculty } from "../../../types/academicManagement.type";
 
 const CreateAcademicFaculty = () => {
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+  const [addFaculty] = useAddAcademciFacultyMutation();
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const toastId = toast.loading("....Creating");
+    try {
+      const res = (await addFaculty(data)) as TResponse<
+        Partial<TAcademicFaculty>
+      >;
+      if (res.error) {
+        toast.error(res.error?.data?.message, { id: toastId });
+      } else {
+        toast.success("Faculty Created Successfully", { id: toastId });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      toast.error(err.message, { id: toastId });
+    }
   };
   return (
     <>

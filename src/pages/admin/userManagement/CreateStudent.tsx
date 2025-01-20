@@ -5,7 +5,10 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import PHSelect from "../../../component/form/PHSelect";
 import { bloodGroupOptions, genderOptions } from "../../../constants/global";
 import PHDatePicker from "../../../component/form/PHDatePicker";
-import { useAcademciSemesterQuery } from "../../../redux/features/admin/academicManagement.api";
+import {
+  useAcademciSemesterQuery,
+  useAllAcademciDepartmentQuery,
+} from "../../../redux/features/admin/academicManagement.api";
 
 const CreateStudent = () => {
   const defaultValues = {
@@ -41,6 +44,13 @@ const CreateStudent = () => {
     semeatarData?.data?.map((item) => ({
       value: item._id,
       label: `${item.name} ${item.year}`,
+    })) || [];
+  const { data: departmentdata, isLoading: dIsLoading } =
+    useAllAcademciDepartmentQuery(undefined);
+  const departmentOptions =
+    departmentdata?.data?.map((item) => ({
+      value: item._id,
+      label: item.name,
     })) || [];
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data.name);
@@ -195,16 +205,30 @@ const CreateStudent = () => {
                   label="Admission Semester"
                 />
               </Col>
-              {/* <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
-              <PHSelect
-                options={departmentOptions}
-                disabled={dIsLoading}
-                name="academicDepartment"
-                label="Admission Department"
-              />
-            </Col> */}
+              <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
+                <PHSelect
+                  options={departmentOptions}
+                  disabled={dIsLoading}
+                  name="academicDepartment"
+                  label="Admission Department"
+                />
+              </Col>
             </Row>
-            <Button htmlType="submit">Submit</Button>
+            <Button
+              type="primary"
+              shape="round"
+              size="large"
+              style={{
+                backgroundColor: "#1890ff",
+                borderColor: "#1890ff",
+                fontWeight: "bold",
+                padding: "0 24px",
+                color: "#fff",
+              }}
+              htmlType="submit"
+            >
+              Submit
+            </Button>
           </PHForm>
         </Col>
       </Row>

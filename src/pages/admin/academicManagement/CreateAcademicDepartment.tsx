@@ -3,17 +3,38 @@ import PHForm from "../../../component/form/PHForm";
 import PHInput from "../../../component/form/PHInput";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import PHSelect from "../../../component/form/PHSelect";
-import { useAcademciSemesterQuery } from "../../../redux/features/admin/academicManagement.api";
+import {
+  useAddAcademciDepartmentMutation,
+  useAllAcademciFacultyQuery,
+} from "../../../redux/features/admin/academicManagement.api";
+import { toast } from "sonner";
+import { TResponse } from "../../../types/global";
+import { TAcademicDepartment } from "../../../types/academicManagement.type";
 
 const CreateAcademicDepartment = () => {
-  const { data: facultyData, isLoading } = useAcademciSemesterQuery(undefined);
+  const { data: facultyData, isLoading } =
+    useAllAcademciFacultyQuery(undefined);
   const facultyOptions =
     facultyData?.data?.map((item) => ({
       value: item._id,
       label: item.name,
     })) || [];
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+  const [addDepartment] = useAddAcademciDepartmentMutation();
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const toastId = toast.loading("....creating");
+    try {
+      const res = (await addDepartment(data)) as TResponse<
+        Partial<TAcademicDepartment>
+      >;
+      if (res.error) {
+        toast.error(res.error?.data?.message, { id: toastId });
+      } else {
+        toast.success("Department Created Successfully", { id: toastId });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      toast.error(err.message, { id: toastId });
+    }
   };
   return (
     <>
