@@ -9,6 +9,10 @@ import {
   useAcademciSemesterQuery,
   useAllAcademciDepartmentQuery,
 } from "../../../redux/features/admin/academicManagement.api";
+import { useAddStudentMutation } from "../../../redux/features/admin/userManagement.api";
+import { TResponse } from "../../../types/global";
+import { TStudent } from "../../../types/userManagement.type";
+import { toast } from "sonner";
 
 const CreateStudent = () => {
   const defaultValues = {
@@ -17,6 +21,7 @@ const CreateStudent = () => {
       middleName: "Student",
       lastName: "Number 1",
     },
+    bloodGroup: "B+",
     gender: "male",
     email: "student2@gmail.com",
     contactNo: "1235678",
@@ -52,8 +57,26 @@ const CreateStudent = () => {
       value: item._id,
       label: item.name,
     })) || [];
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data.name);
+  const [addStudent] = useAddStudentMutation();
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const toastId = toast.loading("....creating");
+    const studentData = {
+      student: data,
+    };
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(studentData));
+    try {
+      const res = (await addStudent(formData)) as TResponse<Partial<TStudent>>;
+      console.log(res);
+      if (res.error) {
+        toast.error(res.error?.data?.message, { id: toastId });
+      } else {
+        toast.success("Student created successfully", { id: toastId });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      toast.error(err?.message, { id: toastId });
+    }
   };
   return (
     <>
