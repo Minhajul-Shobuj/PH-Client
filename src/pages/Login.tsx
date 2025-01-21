@@ -1,18 +1,30 @@
 import { FieldValues } from "react-hook-form";
 import { useLoginMutation } from "../redux/features/auth/authApi";
-import { useAppDispatch } from "../redux/hook";
-import { setUser, TUser } from "../redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hook";
+import {
+  setUser,
+  TUser,
+  useCurrentToken,
+} from "../redux/features/auth/authSlice";
 import { verifyToken } from "../utiles/verifyToken";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import PHForm from "../component/form/PHForm";
 import PHInput from "../component/form/PHInput";
 import { Button, Col, Row } from "antd";
+import { useEffect } from "react";
 
 const Login = () => {
+  const token = useAppSelector(useCurrentToken);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [login] = useLoginMutation();
+  useEffect(() => {
+    if (token) {
+      const user = verifyToken(token) as TUser;
+      navigate(`/${user.role}/dashboard`);
+    }
+  }, [token, navigate]);
   const defaultValues = {
     id: "A-0001",
     password: "admin123",
