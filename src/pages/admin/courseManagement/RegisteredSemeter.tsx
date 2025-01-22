@@ -108,6 +108,7 @@ const RegisteredSemeter = () => {
         columns={columns}
         dataSource={tableData}
         // onChange={onChange}
+        pagination={false}
       />
     </>
   );
